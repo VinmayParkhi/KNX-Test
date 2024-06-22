@@ -1,26 +1,23 @@
-#!/usr/bin/env groovy
 pipeline {
-    agent {
-        node any
-    }
+    agent any
 
     stages {
         stage('Build Image') {
-            when {
-                branch 'master'  //only run these steps on the master branch
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/VinmayParkhi/KNX-Test.git']])
+                sh 'docker build -t ml-microservices .'
+                echo 'Docker Image Build Successfully'
             }
-
-            // Jenkins Stage to Build the Docker Image
-
         }
-
         stage('Publish Image') {
-            when {
-                branch 'master'  //only run these steps on the master branch
+            steps{
+                withCredentials([usernamePassword(credentialsId:"DockerHub",passwordVariable:"dockerPass",usernameVariable:"dockerUser")]){
+                sh "docker login -u ${env.dockerUser} -p ${env.dockerPass}"
+                sh "docker tag ml-microservices:latest ${env.dockerUser}/ml-microservices:latest"
+                sh "docker push ${env.dockerUser}/ml-microservices:latest"
+                echo 'Image Pushed to DockerHub'
+                }
             }
-            
-            // Jenkins Stage to Publish the Docker Image to Dockerhub or any Docker repository of your choice.
-
         }
     }
 }
