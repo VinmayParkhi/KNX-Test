@@ -12,8 +12,8 @@ COPY . .
 # Install packages from requirements.txt
 # hadolint ignore=DL3013
 RUN pip install --upgrade pip && \
-		pip install --upgrade setuptools && \
-		pip install -r requirements.txt
+    pip install --upgrade setuptools && \
+    pip install -r requirements.txt
 
 RUN chmod +x make_prediction.sh
 
