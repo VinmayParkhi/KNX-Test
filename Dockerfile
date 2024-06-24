@@ -13,7 +13,7 @@ COPY . .
 # hadolint ignore=DL3013
 RUN pip install --upgrade pip && \
     pip install --upgrade setuptools && \
-    pip install -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
 RUN chmod +x make_prediction.sh
 
